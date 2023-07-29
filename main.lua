@@ -79,6 +79,11 @@ function love.load()
         ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
         ['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static')
     }
+
+    -- reduce volume
+    for _key, sound in pairs(sounds) do
+        sound:setVolume(0.5)
+    end
     
     -- initialize our virtual resolution, which will be rendered within our
     -- actual window no matter its dimensions
@@ -232,20 +237,21 @@ function love.update(dt)
     --
     -- paddles can move no matter what state we're in
     --
+
     -- player 1
-    if love.keyboard.isDown('w') then
+    if love.keyboard.isDown('up') then
         player1.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('s') then
+    elseif love.keyboard.isDown('down') then
         player1.dy = PADDLE_SPEED
     else
         player1.dy = 0
     end
 
-    -- player 2
-    if love.keyboard.isDown('up') then
-        player2.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('down') then
+    -- AI
+    if (ball.y - player2.y) > 1 then
         player2.dy = PADDLE_SPEED
+    elseif (player2.y - ball.y) > 1  then
+        player2.dy = -PADDLE_SPEED
     else
         player2.dy = 0
     end
