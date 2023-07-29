@@ -90,6 +90,10 @@ function love.load()
         ['music'] = love.audio.newSource('marios_way.mp3', 'static')
     }
 
+    for k, sound in pairs(sounds) do
+        sound:setVolume(0.5)
+    end
+
     -- kick off music
     sounds['music']:setLooping(true)
     sounds['music']:play()
