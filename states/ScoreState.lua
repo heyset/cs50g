@@ -16,6 +16,9 @@ ScoreState = Class{__includes = BaseState}
 ]]
 function ScoreState:enter(params)
     self.score = params.score
+    self.bronzeMedalImage = love.graphics.newImage('bronze_medal.png')
+    self.silverMedalImage = love.graphics.newImage('silver_medal.png')
+    self.goldMedalImage = love.graphics.newImage('gold_medal.png')
 end
 
 function ScoreState:update(dt)
@@ -26,12 +29,34 @@ function ScoreState:update(dt)
 end
 
 function ScoreState:render()
-    -- simply render the score to the middle of the screen
+    local topMessage = ''
+    local middleMessage = ''
+    local medalImage = nil
+    
+    if self.score == 0 then
+        topMessage = 'Oof! You lost :('
+    elseif self.score < 10 then
+        topMessage = 'Gratz! You won a bronze medal.'
+        middleMessage = 'Think you can make 10 or more points next time?'
+        medalImage = self.bronzeMedalImage
+    elseif self.score < 20 then
+        topMessage = 'Wow! You got a silver medal!'
+        middleMessage = 'Do you think you can grab that gold one over 20 points?'
+        medalImage = self.silverMedalImage
+    else
+        topMessage = "NICE! You're a true bird champion!"
+        medalImage = self.goldMedalImage
+    end
+    
     love.graphics.setFont(flappyFont)
-    love.graphics.printf('Oof! You lost!', 0, 64, VIRTUAL_WIDTH, 'center')
+    love.graphics.printf(topMessage, 0, 60, VIRTUAL_WIDTH, 'center')
 
     love.graphics.setFont(mediumFont)
     love.graphics.printf('Score: ' .. tostring(self.score), 0, 100, VIRTUAL_WIDTH, 'center')
 
-    love.graphics.printf('Press Enter to Play Again!', 0, 160, VIRTUAL_WIDTH, 'center')
+    if medalImage then
+        love.graphics.draw(medalImage, VIRTUAL_WIDTH / 2 - medalImage.getWidth(medalImage), 105, 0, 2, 2)
+    end
+
+    love.graphics.printf(middleMessage .. '\n\nPress Enter to Play Again!', 0, 210, VIRTUAL_WIDTH, 'center')
 end
