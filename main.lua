@@ -35,6 +35,7 @@ require 'StateMachine'
 -- all states our StateMachine can transition between
 require 'states/BaseState'
 require 'states/CountdownState'
+require 'states/PauseState'
 require 'states/PlayState'
 require 'states/ScoreState'
 require 'states/TitleScreenState'
@@ -50,6 +51,8 @@ WINDOW_HEIGHT = 720
 -- virtual resolution dimensions
 VIRTUAL_WIDTH = 512
 VIRTUAL_HEIGHT = 288
+
+MUSIC = love.audio.newSource('marios_way.mp3', 'static')
 
 local background = love.graphics.newImage('background.png')
 local backgroundScroll = 0
@@ -87,7 +90,6 @@ function love.load()
         ['score'] = love.audio.newSource('score.wav', 'static'),
 
         -- https://freesound.org/people/xsgianni/sounds/388079/
-        ['music'] = love.audio.newSource('marios_way.mp3', 'static')
     }
 
     for k, sound in pairs(sounds) do
@@ -95,8 +97,8 @@ function love.load()
     end
 
     -- kick off music
-    sounds['music']:setLooping(true)
-    sounds['music']:play()
+    MUSIC:setLooping(true)
+    MUSIC:play()
 
     -- initialize our virtual resolution
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
@@ -110,7 +112,8 @@ function love.load()
         ['title'] = function() return TitleScreenState() end,
         ['countdown'] = function() return CountdownState() end,
         ['play'] = function() return PlayState() end,
-        ['score'] = function() return ScoreState() end
+        ['score'] = function() return ScoreState() end,
+        ['pause'] = function() return PauseState() end,
     }
     gStateMachine:change('title')
 
